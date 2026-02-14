@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TBiDx - Get Prediction</title>
+    <link rel="stylesheet" href="./static/css/style.css" />
+  </head>
+  <body>
+    <div id="background-animation-container">
+      <img
+        src="./static/backimg/img1.png"
+        alt="Floating Epidural Icon"
+        class="floating-img"
+      />
+      <img
+        src="./static/backimg/img2.png"
+        alt="Floating Subdural Icon"
+        class="floating-img"
+      />
+      <img
+        src="./static/backimg/img3.png"
+        alt="Floating Subarachnoid Icon"
+        class="floating-img"
+      />
+      <img
+        src="./static/backimg/img4.png"
+        alt="Floating IPH Icon"
+        class="floating-img"
+      />
+      <img
+        src="./static/backimg/img5.png"
+        alt="Floating IVH Icon"
+        class="floating-img"
+      />
+      <img
+        src="./static/backimg/img6.png"
+        alt="Floating Any Icon"
+        class="floating-img"
+      />
+    </div>
+
+    <div class="cursor-light"></div>
+
+    <header>
+      <nav class="navbar">
+        <a href="./index.html" class="nav-logo">TBiDx</a>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="/index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="./chatbot.html" class="nav-link">Chatbot</a>
+          </li>
+          <li class="nav-item">
+            <a href="./prediction.html" class="nav-link">Prediction</a>
+          </li>
+          <li class="nav-item">
+            <a href="./about.html" class="nav-link">About</a>
+          </li>
+          <li class="nav-item">
+            <button id="theme-toggle" class="theme-toggle-btn"></button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="prediction-container">
+        <div class="upload-box" id="upload-box">
+          <input
+            type="file"
+            id="image-upload"
+            accept="image/png, image/jpeg"
+            hidden
+          />
+          <label for="image-upload" class="upload-label">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="50"
+              height="50"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Click to upload or drag & drop a CT Scan</span>
+          </label>
+        </div>
+        <div
+          id="image-preview-container"
+          class="image-preview-container"
+          style="display: none"
+        >
+          <img id="image-preview" src="#" alt="Image Preview" />
+        </div>
+        <div id="loader" class="loader" style="display: none"></div>
+        <div id="results-container" class="results-container"></div>
+        <div id="summary-container" class="summary-container"></div>
+      </div>
+    </main>
+    <div class="custom-scrollbar-track">
+      <div class="custom-scrollbar-thumb"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="./static/js/script.js"></script>
+  </body>
+</html>
