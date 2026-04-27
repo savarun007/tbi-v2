@@ -598,7 +598,7 @@ def predict():
 @app.route('/chat', methods=['POST'])
 def chat():
     """
-    Updated Chat Route using the robust Router API (OpenAI-compatible format).
+    Updated Chat Route with strict TBI-only guardrails.
     """
     if not HF_API_TOKEN:
         return jsonify({'reply': "Error: API Key is missing."}), 500
@@ -607,16 +607,18 @@ def chat():
     user_input = data.get('message', '')
     context = data.get('context', '')
 
-    # 1. Define the System Prompt for TBiDx
+    # 1. Define the STRICT System Prompt for TBiDx
     system_prompt = (
         "You are TBiDx AI, an expert neurosurgical assistant. "
-        "Your goal is to explain Traumatic Brain Injury (TBI) concepts clearly. "
+        "Your sole purpose is to explain Traumatic Brain Injury (TBI) concepts clearly. "
+        "STRICT RULE: You must ONLY answer questions related to Traumatic Brain Injuries, neurosurgery, and brain anatomy. "
+        "If the user asks about ANY other topic (including coding, general health, math, or unrelated casual chat), you must politely decline and state that you are specialized exclusively in TBI diagnosis and education. "
         "If a specific diagnosis is provided in the context, explain the pathology, urgency, and standard treatments. "
         "Keep answers concise (under 150 words) but informative. "
         "Disclaimer: You are an AI, not a doctor. Always advise consulting a specialist."
     )
 
-    # 2. Construct the Message Payload (New Router API Format)
+    # 2. Construct the Message Payload 
     full_user_message = f"{user_input}\nContext: {context}" if context else user_input
     
     payload = {
@@ -626,7 +628,7 @@ def chat():
             {"role": "user", "content": full_user_message}
         ],
         "max_tokens": 250,
-        "temperature": 0.7,
+        "temperature": 0.3, # Lowered temperature slightly to make it strictly follow rules
         "stream": False
     }
 
@@ -647,7 +649,7 @@ def chat():
             print(f"❌ API Error {response.status_code}: {response.text}")
             return jsonify({'reply': f"API Error: {response.status_code}"})
 
-        # 5. Parse Response (OpenAI Format: choices[0].message.content)
+        # 5. Parse Response
         result = response.json()
         bot_reply = result['choices'][0]['message']['content']
         return jsonify({'reply': bot_reply})
@@ -655,6 +657,5 @@ def chat():
     except Exception as e:
         print(f"❌ Connection Error: {e}")
         return jsonify({'reply': "Sorry, I can't connect to the AI brain right now."})
-
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
