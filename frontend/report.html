@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TBiDx - Radiological Report</title>
+    <style>
+      :root {
+        --primary-blue: #1e3a8a;
+        --secondary-blue: #3b82f6;
+        --text-dark: #111827;
+        --text-muted: #4b5563;
+        --border-light: #e5e7eb;
+        --danger-red: #dc2626;
+      }
+
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background-color: #d1d5db;
+        color: var(--text-dark);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .report-page {
+        background-color: #ffffff;
+        width: 100%;
+        max-width: 850px;
+        padding: 60px;
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 10rem;
+        font-weight: 800;
+        color: rgba(30, 58, 138, 0.03);
+        z-index: 0;
+        pointer-events: none;
+        letter-spacing: 10px;
+        white-space: nowrap;
+      }
+
+      .content-wrapper {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--primary-blue);
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+      }
+
+      .header-text h1 {
+        margin: 0;
+        color: var(--primary-blue);
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      .header-text p {
+        margin: 4px 0 0;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .patient-info {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+        font-size: 0.95rem;
+      }
+
+      .patient-info td {
+        padding: 10px 15px;
+        border: 1px solid var(--border-light);
+      }
+
+      .patient-info td.label {
+        background-color: #f9fafb;
+        font-weight: 600;
+        width: 15%;
+        color: var(--text-muted);
+      }
+
+      .patient-info td.value {
+        width: 35%;
+        font-weight: 500;
+      }
+
+      .report-body {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .scan-container {
+        text-align: center;
+      }
+
+      .scan-container h3 {
+        font-size: 1rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 15px;
+        border-bottom: 1px solid var(--border-light);
+        padding-bottom: 8px;
+      }
+
+      .scan-container img {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .clinical-details h3 {
+        font-size: 1.1rem;
+        color: var(--primary-blue);
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 8px;
+        margin-top: 0;
+        margin-bottom: 15px;
+      }
+
+      .clinical-details p {
+        line-height: 1.6;
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+      }
+
+      .impression {
+        background-color: #fef2f2;
+        border: 1px solid #fca5a5;
+        border-left: 5px solid var(--danger-red);
+        padding: 20px;
+        border-radius: 4px;
+      }
+
+      .impression h4 {
+        margin: 0 0 10px 0;
+        color: var(--danger-red);
+        font-size: 1.1rem;
+        text-transform: uppercase;
+      }
+
+      .impression .diagnosis {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+      }
+
+      .impression .confidence {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .disclaimer {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        text-align: justify;
+        margin-top: 30px;
+        line-height: 1.5;
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-blue);
+        color: white;
+        box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2);
+      }
+
+      .btn-primary:hover {
+        background-color: #152c69;
+      }
+
+      .btn-outline {
+        background-color: white;
+        color: var(--text-dark);
+        border: 1px solid var(--border-light);
+      }
+
+      .btn-outline:hover {
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+      }
+
+      @media print {
+        body {
+          background-color: white;
+          padding: 0;
+        }
+        .controls {
+          display: none;
+        }
+        .report-page {
+          box-shadow: none;
+          padding: 0;
+          max-width: 100%;
+        }
+        .impression {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .patient-info td.label {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls no-print">
+      <button class="btn btn-outline" onclick="window.history.back()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="window.print()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path
+            d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+          ></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        Print Report
+      </button>
+    </div>
+
+    <div class="report-page">
+      <div class="watermark">TBiDx</div>
+
+      <div class="content-wrapper">
+        <div class="header">
+          <div class="header-text">
+            <h1>TBiDx DIAGNOSTICS</h1>
+            <p>Automated Traumatic Brain Injury Classification System</p>
+            <p>Shriman Superspecialty Hospital Data Network</p>
+          </div>
+        </div>
+
+        <table class="patient-info">
+          <tr>
+            <td class="label">Patient Name:</td>
+            <td class="value" id="out-name">-</td>
+            <td class="label">Date:</td>
+            <td class="value" id="out-date">-</td>
+          </tr>
+          <tr>
+            <td class="label">Age / Sex:</td>
+            <td class="value" id="out-age-sex">-</td>
+            <td class="label">Ref. Doctor:</td>
+            <td class="value" id="out-doctor">-</td>
+          </tr>
+          <tr>
+            <td class="label">Patient ID:</td>
+            <td class="value" id="out-id">-</td>
+            <td class="label">Modality:</td>
+            <td class="value">CT Head (Non-Contrast)</td>
+          </tr>
+        </table>
+
+        <div class="report-body">
+          <div class="scan-container">
+            <h3>Analyzed Scan</h3>
+            <img
+              id="out-image"
+              src=""
+              alt="CT Scan Image"
+              onerror="this.style.display = 'none'"
+            />
+          </div>
+
+          <div class="clinical-details">
+            <h3>Radiological Findings</h3>
+            <p id="out-findings">Loading findings...</p>
+
+            <h3>Impression</h3>
+            <div class="impression">
+              <h4>Primary AI Diagnosis</h4>
+              <div class="diagnosis" id="out-diagnosis">-</div>
+              <div class="confidence">
+                Match Confidence Score: <span id="out-confidence">-</span>%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="footer-meta">
+            <p style="margin: 0 0 5px 0">
+              <strong>Report Status:</strong> Final (AI Generated)
+            </p>
+            <p style="margin: 0">
+              <strong>Model Build:</strong> v3.1 (TBI-HemoCT)
+            </p>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          *DISCLAIMER: This diagnostic report is generated autonomously by an
+          Artificial Intelligence system designed to assist in radiological
+          evaluation. The findings and impressions stated herein are based on
+          algorithmic pattern matching and do not constitute a definitive
+          medical diagnosis. Clinical correlation and review by a qualified
+          neurosurgeon or board-certified radiologist are strictly required
+          prior to any clinical decision-making.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const patientData =
+          JSON.parse(localStorage.getItem("patient_data")) || {};
+        const diagnosis =
+          localStorage.getItem("current_diagnosis") || "Unknown";
+        const confidence = localStorage.getItem("current_confidence") || "0";
+        const imageSrc = localStorage.getItem("report_image") || "";
+
+        document.getElementById("out-name").textContent =
+          patientData.name || "Anonymous";
+        document.getElementById("out-age-sex").textContent =
+          `${patientData.age || "N/A"} / ${patientData.gender || "N/A"}`;
+        document.getElementById("out-doctor").textContent =
+          patientData.doctor || "Self-Referred";
+        document.getElementById("out-date").textContent =
+          new Date().toLocaleDateString();
+        document.getElementById("out-id").textContent =
+          "TBI-" + Math.floor(100000 + Math.random() * 900000);
+
+        document.getElementById("out-diagnosis").textContent = diagnosis;
+        document.getElementById("out-confidence").textContent = confidence;
+
+        if (imageSrc && !imageSrc.includes("undefined")) {
+          document.getElementById("out-image").src = imageSrc;
+        }
+
+        // --- Dynamic Radiological Findings Mapping ---
+        const findingsMap = {
+          "Epidural Hemorrhage (EDH)":
+            "A biconvex (lens-shaped) hyperdense extra-axial collection is noted, characteristic of an epidural hemorrhage. Associated mass effect and potential underlying skull fracture should be evaluated clinically.",
+          "Subdural Hemorrhage (SDH)":
+            "A crescent-shaped hyperdense extra-axial collection is identified along the cerebral convexity, consistent with a subdural hemorrhage. Note is made of adjacent mass effect and sulcal effacement.",
+          "Subarachnoid Hemorrhage (SAH)":
+            "Hyperdensity is visualized within the subarachnoid spaces, including the basal cisterns and/or cerebral sulci, indicative of a subarachnoid hemorrhage.",
+          "Intraparenchymal Hemorrhage (IPH)":
+            "An intraparenchymal hyperdense focus is present within the cerebral tissue, consistent with acute intraparenchymal hemorrhage. Surrounding edema and regional mass effect are noted.",
+          "Intraventricular Hemorrhage (IVH)":
+            "Hyperdense blood products are identified layering within the ventricular system, consistent with intraventricular hemorrhage. The ventricles should be evaluated for obstructive hydrocephalus.",
+          "No Hemorrhage Detected (Normal)":
+            "The brain parenchyma demonstrates normal CT attenuation. No focal hyperdense acute hemorrhage, extra-axial fluid collection, or significant mass effect is identified. The ventricular system and basal cisterns appear unremarkable.",
+        };
+
+        const defaultFinding =
+          "The AI model has processed the scan but could not map it to a standard morphological description. Clinical correlation and review by a radiologist are highly recommended.";
+
+        document.getElementById("out-findings").textContent =
+          findingsMap[diagnosis] || defaultFinding;
+      });
+    </script>
+  </body>
+</html>
